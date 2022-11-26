@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Gauge graph! version by Trevo ME</title>
+	<meta charset='utf-8'>
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="stylesheet.css" media="screen" />
+
+
+	<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+		google.charts.load('current', {
+			'packages': ['gauge']
+		});
+		google.charts.setOnLoadCallback(drawGauge);
+
+		var gaugeOptions = {
+			min: 0,
+			max: 100,
+			yellowFrom: 70,
+			yellowTo: 90,
+			redFrom: 90,
+			redTo: 100,
+			minorTicks: 5
+		};
+		var gaugeData;
+
+		function drawGauge() {
+			gaugeData = new google.visualization.DataTable();
+			gaugeData.addColumn("number", "Termômetro");
+			gaugeData.addRows(1);
+			gaugeData.setCell(0, 0, 0);
+
+
+			gauge = new google.visualization.Gauge(document.getElementById('gauge_div'));
+			gauge.draw(gaugeData, gaugeOptions);
+		}
+
+		function changeTemp(dir) {
+			gaugeData.setValue(0, 0, gaugeData.getValue(0, 0) + dir * 1);
+			gauge.draw(gaugeData, gaugeOptions);
+		}
+
+		var timer = setTimeout(function () {
+
+			myVar = setInterval(myTimer, 250);
+
+		}, 1000);
+
+
+		let contador = 1;
+
+		//A porcentagem pode vir do seu programa arduino, php, java etc
+		let porcentagem = 70;
+
+		function myTimer() {
+
+			if (contador <= porcentagem) {
+				changeTemp(1);
+				contador++;
+			} else {
+				clearInterval(myVar);
+				showMessage();
+			}
+
+		}
+
+		function showMessage() {
+			if (porcentagem) {
+				if (porcentagem < 70) {
+
+					$("#alertaGauge").text("Ótimo");
+					$("#mensagemGauge").text("Voçe controla muito bem suas finanças!");
+
+				} else if (porcentagem >= 70 && porcentagem <= 90) {
+
+					$("#alertaGauge").text("Alerta");
+					$("#mensagemGauge").text("Cuidado, nivel amarelo! Esta na hora de revisar os relatórios");
+
+				} else if (porcentagem > 90) {
+
+					$("#alertaGauge").text("Cuidado");
+					$("#mensagemGauge").text("Algo errado, corte despesas ou aumente suas receitas");
+
+				} else {
+
+					$("#alertaGauge").text("Ooops");
+					$("#mensagemGauge").text("Parece que voçê ainda não usou o sistema, eu preciso de receitas e despesas cadastradas para funcionar");
+
+				}
+			} else {
+
+				$("#alertaGauge").text("Ooops");
+				$("#mensagemGauge").text("Parece que voçê ainda não usou o sistema, eu preciso de receitas e despesas cadastradas para funcionar");
+
+			}
+		}
+	</script>
+
+</head>
+
+<body>
+
+	<div id="container">
+		<div class="inner">
+
+			<header>
+				<h1>Gauge graph</h1>
+				<h2>Usando o Gauge como Termômetro Financeiro em uma aplicação!</h2>
+			</header>
+
+
+			<section class="content">
+
+				<div class="container-fluid">
+
+					<div class="row">
+
+						<div class="col-lg-3 col-xs-6">
+
+							<div class="small-box bg-blue">
+								<div class="inner">
+									<h3 id="alertaGauge"></h3>
+									<p id="mensagemGauge"></p>
+									<div id="gauge_div"></div>
+								</div>
+								<div class="icon">
+									<i class="ion ion-pie-graph"></i>
+								</div>
+								
+							</div>
+						</div>
+
+						<!-- ./col -->
+					</div>
+				</div><!-- /.container-fluid -->
+
+
+			</section>
+		</div>
+
+	</div>
+
+
+</html>
